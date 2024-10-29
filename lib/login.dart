@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:fluthermostat/permissions.dart';
 import 'package:fluthermostat/site.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
 
 
 class Login extends StatefulWidget {
@@ -29,31 +31,41 @@ class _LoginState extends State<Login> {
   String bearer = "";
   String errorText = "";
   static String baseUrl = Platform.isAndroid
-      ? "http://192.168.1.136:8080"
+      ? "http://192.168.1.134:8080"
       : "http://localhost:8080";
   final nameController = TextEditingController();
   final passController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    requestPermissions(context);
+  }
+
   void _tryLogin() async {
     final url = Uri.parse("$baseUrl/login");
-    final response = await http.post(url,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: jsonEncode(<String, String> {
-        "name": nameController.text,
-          "password": passController.text,
-    }));
-    if (response.statusCode == 200) {
-      bearer = jsonDecode(response.body)['value'];
-      errorText = "";
-      Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage(bearer)));
-    } else {
-      passController.text = "";
-      bearer = "";
-      errorText = "Name or password incorrect";
+    try {
+      final response = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: jsonEncode(<String, String>{
+            "name": nameController.text,
+            "password": passController.text,
+          }));
+      if (response.statusCode == 200) {
+        bearer = jsonDecode(response.body)['value'];
+        errorText = "";
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage(bearer)));
+      } else {
+        passController.text = "";
+        bearer = "";
+        errorText = "Name or password incorrect";
+      }
+      setState(() {});
+    } catch (exception) {
+      print("ret");
     }
-    setState(() {});
   }
 
   @override
@@ -64,6 +76,12 @@ class _LoginState extends State<Login> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    /*if (Platform.isAndroid) {
+      Workmanager().initialize(geolocation, isInDebugMode: true);
+      Workmanager().registerPeriodicTask("1",
+          "fetchLocation",
+          frequency: Duration(seconds: 1));
+    }**/
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login Page'),
