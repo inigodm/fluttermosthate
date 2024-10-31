@@ -5,10 +5,21 @@ import 'package:permission_handler/permission_handler.dart';
 Future<void> requestPermissions(BuildContext context) async {
   Map<Permission, PermissionStatus> statuses = await [
     Permission.locationAlways,
+    Permission.locationWhenInUse,
     Permission.storage,
+    Permission.location,
+    Permission.backgroundRefresh
   ].request();
   if (statuses[Permission.location] == PermissionStatus.permanentlyDenied ||
-      statuses[Permission.storage] == PermissionStatus.permanentlyDenied) {
+      statuses[Permission.locationWhenInUse] == PermissionStatus.permanentlyDenied ||
+      statuses[Permission.locationAlways] == PermissionStatus.permanentlyDenied ||
+      //statuses[Permission.backgroundRefresh] == PermissionStatus.permanentlyDenied ||
+      //statuses[Permission.storage] == PermissionStatus.permanentlyDenied ||
+      statuses[Permission.location] == PermissionStatus.denied ||
+      statuses[Permission.locationWhenInUse] == PermissionStatus.denied ||
+      //statuses[Permission.storage] == PermissionStatus.denied  ||
+      //statuses[Permission.backgroundRefresh] == PermissionStatus.denied ||
+      statuses[Permission.locationAlways] == PermissionStatus.denied) {
     _showAlertDialog(context);
   }
 }

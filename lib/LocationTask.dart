@@ -22,12 +22,17 @@ class LocationTask extends TaskHandler {
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     // Llamado al iniciar el servicio
+    print("Iniciando esta miuerdfa");
   }
 
   @override
   void onRepeatEvent(DateTime timestamp) async {
     // Se ejecutará cada 2 segundos en este caso
+    print("Esta mierda se ejecuta cada 2 segundos?");
+    await Future.delayed(Duration(seconds: 2));
+    /*
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
     if (!serviceEnabled) {
       return;
     }
@@ -49,6 +54,8 @@ class LocationTask extends TaskHandler {
     );
 
     print("Lat: ${position.latitude}, Lng: ${position.longitude}");
+    */
+
   }
 
   @override
@@ -102,22 +109,22 @@ Future<void> _requestPermissions() async {
   }
 }
 
-void _initService() {
+/*void _initService() {
   FlutterForegroundTask.init(
     androidNotificationOptions: AndroidNotificationOptions(
       channelId: 'foreground_service',
       channelName: 'Foreground Service Notification',
       channelDescription:
       'This notification appears when the foreground service is running.',
-      channelImportance: NotificationChannelImportance.LOW,
-      priority: NotificationPriority.LOW,
+      channelImportance: NotificationChannelImportance.HIGH,
+      priority: NotificationPriority.HIGH,
     ),
     iosNotificationOptions: const IOSNotificationOptions(
       showNotification: false,
       playSound: false,
     ),
     foregroundTaskOptions: ForegroundTaskOptions(
-      eventAction: ForegroundTaskEventAction.repeat(5000),
+      eventAction: ForegroundTaskEventAction.repeat(2000),
       autoRunOnBoot: true,
       autoRunOnMyPackageReplaced: true,
       allowWakeLock: true,
@@ -141,4 +148,4 @@ Future<ServiceRequestResult> _startService() async {
       callback: startCallback,
     );
   }
-}
+}*/

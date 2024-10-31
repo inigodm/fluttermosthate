@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
+import 'LocationTask.dart';
 import 'login.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
+
+/*@pragma('vm:entry-point')
+void startCallback() {
+  FlutterForegroundTask.setTaskHandler(LocationTask());
+}*/
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Login(title: 'Flutter Demo Home Page'),
+      home: const Login(title: 'Fluttermostat Login'),
     );
   }
 }
