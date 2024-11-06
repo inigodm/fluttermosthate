@@ -30,7 +30,7 @@ class LocationTask extends TaskHandler {
     // Se ejecutará cada 2 segundos en este caso
     print("Esta mierda se ejecuta cada 2 segundos?");
     await Future.delayed(Duration(seconds: 2));
-    /*
+
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!serviceEnabled) {
@@ -54,9 +54,32 @@ class LocationTask extends TaskHandler {
     );
 
     print("Lat: ${position.latitude}, Lng: ${position.longitude}");
-    */
 
   }
+
+  /*void sendSchedule() async {
+    final url = Uri.parse("$baseUrl/schedule");
+    Schedule schedule = Schedule(Uuid().v1(),
+        initTime.text,
+        weekDays.toString(),
+        active,
+        desiredTemp);
+    final response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': bearer,
+        },
+        body: jsonEncode( {
+          "id": schedule.id,
+          "timeFrom": schedule.timeFrom,
+          "active": schedule.active,
+          "minTemp": schedule.desiredTemp,
+          "weekDays": schedule.weekDays.replaceAll(" ", "").replaceAll("[", "").replaceAll("]", "")
+        }));
+    if (response.statusCode == 200) {
+      subscriber.push(ScheduleCreated(schedule));
+    }
+  }*/
 
   @override
   Future<void> onDestroy(DateTime timestamp) async {

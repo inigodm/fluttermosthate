@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
       }
       setState(() {});
     } catch (exception) {
-      print("ret");
+      errorText = "Error trying to login: ${exception.toString()}";
     }
   }
 
