@@ -4,6 +4,9 @@ import 'package:fluthermostat/pages/GraphPage.dart';
 import 'package:fluthermostat/pages/schedules/SchedulesPage.dart';
 import 'package:fluthermostat/pages/Thermostat.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
+
+import 'location_task.dart';
 
 class HomePage extends StatefulWidget {
   late String bearer;
@@ -24,6 +27,26 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
   _HomePageState(this.bearer);
+
+  @override
+  void initState() {
+    super.initState();
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: 'location_channel',
+        channelName: 'Servicio de Rastreo de Ubicación',
+        channelDescription: 'Este servicio permite rastrear la ubicación cada 2 segundos',
+      ),
+      foregroundTaskOptions: ForegroundTaskOptions(
+        autoRunOnBoot: true,
+        allowWakeLock: true,
+        allowWifiLock: true,
+        eventAction: ForegroundTaskEventAction.repeat(2000),
+      ),
+      iosNotificationOptions: IOSNotificationOptions(),
+    );
+    startBackgroundTask();
+  }
 
   void _onItemTapped(int item) {
     setState(() {

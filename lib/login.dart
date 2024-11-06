@@ -6,7 +6,6 @@ import 'package:fluthermostat/site.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:http/http.dart' as http;
-import 'package:permission_handler/permission_handler.dart';
 
 import 'location_task.dart';
 
@@ -38,27 +37,6 @@ class _LoginState extends State<Login> {
       : "http://localhost:8080";
   final nameController = TextEditingController();
   final passController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    requestPermissions(context);
-    FlutterForegroundTask.init(
-      androidNotificationOptions: AndroidNotificationOptions(
-        channelId: 'location_channel',
-        channelName: 'Servicio de Rastreo de Ubicación',
-        channelDescription: 'Este servicio permite rastrear la ubicación cada 2 segundos',
-      ),
-      foregroundTaskOptions: ForegroundTaskOptions(
-        autoRunOnBoot: true,
-        allowWakeLock: true,
-        allowWifiLock: true,
-        eventAction: ForegroundTaskEventAction.repeat(2000),
-      ),
-      iosNotificationOptions: IOSNotificationOptions(),
-    );
-    startBackgroundTask();
-  }
 
   void _tryLogin() async {
     final url = Uri.parse("$baseUrl/login");
