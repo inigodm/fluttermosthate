@@ -9,24 +9,19 @@ import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'location_task.dart';
 
 class HomePage extends StatefulWidget {
-  late String bearer;
 
   //Constructor
-  HomePage(this.bearer, {super.key});
+  HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState(bearer);
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  static String baseUrl = Platform.isAndroid
-      ? "http://192.168.1.136:8080"
-      : "http://localhost:8080";
-  late String bearer;
   final List<Widget> _pages = [];
   int _selectedIndex = 0;
 
-  _HomePageState(this.bearer);
+  _HomePageState();
 
   @override
   void initState() {
@@ -57,8 +52,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     _pages.clear();
-    _pages.add(Thermostat(baseUrl, bearer));
-    _pages.add(SchedulesPage(baseUrl, bearer));
+    _pages.add(Thermostat());
+    _pages.add(SchedulesPage());
     _pages.add(GraphPage.build());
     return Scaffold(
       appBar: AppBar(

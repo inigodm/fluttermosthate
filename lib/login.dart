@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:fluthermostat/permissions.dart';
+import 'package:fluthermostat/main.dart';
 import 'package:fluthermostat/site.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:http/http.dart' as http;
 
 import 'location_task.dart';
@@ -30,16 +28,12 @@ class Login extends StatefulWidget {
 
 
 class _LoginState extends State<Login> {
-  String bearer = "";
   String errorText = "";
-  static String baseUrl = Platform.isAndroid
-      ? "http://192.168.1.134:8080"
-      : "http://localhost:8080";
   final nameController = TextEditingController();
   final passController = TextEditingController();
 
   void _tryLogin() async {
-    final url = Uri.parse("$baseUrl/login");
+    final url = Uri.parse("${Preferences.baseUrl}/login");
     try {
       final response = await http.post(url,
           headers: {
@@ -50,12 +44,12 @@ class _LoginState extends State<Login> {
             "password": passController.text,
           }));
       if (response.statusCode == 200) {
-        bearer = jsonDecode(response.body)['value'];
+        await Preferences.setBearer(jsonDecode(response.body)['value']['bearer']);
+        await Preferences.setUserId(jsonDecode(response.body)['value']['userId']);
         errorText = "";
-        Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage(bearer)));
+        Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
       } else {
         passController.text = "";
-        bearer = "";
         errorText = "Name or password incorrect";
       }
       setState(() {});

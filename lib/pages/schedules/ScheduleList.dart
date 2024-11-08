@@ -4,28 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../main.dart';
 import 'listener/ScheduleEvent.dart';
 import 'listener/SchedulesSubscriber.dart';
 
 class SchedulesList extends StatefulWidget {
-  String bearer;
-  String baseUrl;
   SchedulesSubscriber subscriber;
 
-  SchedulesList(this.baseUrl, this.bearer, this.subscriber, {super.key});
+  SchedulesList(this.subscriber, {super.key});
 
   @override
-  State<StatefulWidget> createState() => _SchedulesList(bearer, baseUrl, subscriber);
+  State<StatefulWidget> createState() => _SchedulesList(subscriber);
 
 }
 
 class _SchedulesList  extends State<SchedulesList>{
-  String bearer;
-  String baseUrl;
   SchedulesSubscriber subscriber;
   List<ScheduleItem> items = [];
 
-  _SchedulesList(this.bearer, this.baseUrl, this.subscriber){
+  _SchedulesList(this.subscriber){
    loadSchedules();
    subscriber.subscribeToCreation((event) => {
      loadSchedules()
@@ -33,11 +30,11 @@ class _SchedulesList  extends State<SchedulesList>{
   }
 
   void deleteSchedule(Schedule schedule) async {
-    final url = Uri.parse("$baseUrl/schedule/${schedule.id}");
+    final url = Uri.parse("${Preferences.baseUrl}/schedule/${schedule.id}");
     final response = await http.delete(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         },);
     if (response.statusCode == 200) {
       loadSchedules();
@@ -45,11 +42,11 @@ class _SchedulesList  extends State<SchedulesList>{
   }
 
   void loadSchedules() async {
-    final url = Uri.parse("$baseUrl/schedules");
+    final url = Uri.parse("${Preferences.baseUrl}/schedules");
     final response = await http.get(url,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': bearer,
+            'Authorization': Preferences.bearer,
           });
       if (response.statusCode == 200) {
         if (jsonDecode(response.body)["value"] == null) {

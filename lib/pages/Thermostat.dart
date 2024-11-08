@@ -1,28 +1,25 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:fluthermostat/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Thermostat extends StatefulWidget {
-  String bearer;
-  String baseUrl;
 
-  Thermostat(this.baseUrl, this.bearer, {super.key});
+  Thermostat({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ThermostatPage(bearer, baseUrl);
+  State<StatefulWidget> createState() => _ThermostatPage();
 
 }
 
 class _ThermostatPage  extends State<Thermostat>{
-  String bearer;
-  String baseUrl;
   int targetTemp = 10;
   String externalTemp = "0.00";
   String roomTemp = "0.00";
   Timer? timer;
 
-  _ThermostatPage(this.bearer, this.baseUrl){
+  _ThermostatPage(){
     getDesiredValue();
     refreshThermostateStatus();
   }
@@ -41,11 +38,11 @@ class _ThermostatPage  extends State<Thermostat>{
   }
 
   void getDesiredValue() async {
-    final url = Uri.parse("$baseUrl/temperature");
+    final url = Uri.parse("${Preferences.baseUrl}/temperature");
     final response = await http.get(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         });
     setState(() {
       if (response.statusCode == 200) {
@@ -55,11 +52,11 @@ class _ThermostatPage  extends State<Thermostat>{
   }
 
   void increase() async {
-    final url = Uri.parse("$baseUrl/temperature/increment");
+    final url = Uri.parse("${Preferences.baseUrl}/temperature/increment");
     final response = await http.put(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         },
         body: jsonEncode(<String, int> {
           "temperature": 100,
@@ -73,11 +70,11 @@ class _ThermostatPage  extends State<Thermostat>{
   }
 
   void decrease() async {
-    final url = Uri.parse("$baseUrl/temperature/decrement");
+    final url = Uri.parse("${Preferences.baseUrl}/temperature/decrement");
     final response = await http.put(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         },
         body: jsonEncode(<String, int> {
           "temperature": 100,
@@ -91,15 +88,15 @@ class _ThermostatPage  extends State<Thermostat>{
   }
 
   void refreshThermostateStatus() async {
-    final url = Uri.parse("$baseUrl/status");
+    final url = Uri.parse("${Preferences.baseUrl}/status");
     final response = await http.get(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         });
     setState(() {
       if (response.statusCode == 200) {
-        String tempStr = jsonDecode(response.body)['value']['currentTemperature']['temp'].toString();
+        String tempStr = jsonDecode(response.body)['value']['roomTemperature']['temp'].toString();
         roomTemp = "${tempStr.substring(0, tempStr.length - 2)}.${tempStr.substring(tempStr.length - 2)}";
         targetTemp = (jsonDecode(response.body)['value']['targetTemperature']['temp'] / 100).toInt();
         externalTemp = jsonDecode(response.body)['value']['externalTemperature']['temp'].toString();

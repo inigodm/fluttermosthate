@@ -1,8 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
+
+import 'main.dart';
 
 var locationSettings = AndroidSettings(
     accuracy: LocationAccuracy.high,
@@ -27,6 +32,26 @@ void startBackgroundTask() {
 
 Timer? _timer;
 
+Future<Response> informBackground(double latitude, double longitude) {
+  print("Lat: ${latitude}, Lng: ${longitude}");
+  final url = Uri.parse("${Preferences.baseUrl}/geolocation");
+  try {
+    return http.put(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': Preferences.getBearer(),
+        },
+        body: jsonEncode(<String, String>{
+          "userId": Preferences.getUserId(),
+          "latitude": latitude.toString(),
+          "longitude": longitude.toString(),
+        }));
+  } catch(exception) {
+    print("cannot save location $exception");
+    return Future.error(exception);
+  }
+}
+
 void backgroundTask() async {
   // Aquí va tu lógica, por ejemplo:
     _timer?.cancel();
@@ -34,7 +59,6 @@ void backgroundTask() async {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) async {
       // Lógica de tu tarea aquí
       try {
-        print("Ejecutando tarea en segundo plano");
         bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
 
         if (!serviceEnabled) {
@@ -57,10 +81,9 @@ void backgroundTask() async {
             locationSettings: locationSettings
         );
 
-        print("Lat: ${position.latitude}, Lng: ${position.longitude}");
+        var f = await informBackground(position.latitude, position.longitude);
       } catch (e) {
         print("Error al verificar los servicios de ubicación: $e");
       }
     });
-
 }

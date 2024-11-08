@@ -11,21 +11,18 @@ import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
 import '../../Schedule.dart';
+import '../../main.dart';
 
 class SchedulesForm extends StatefulWidget {
-  String bearer;
-  String baseUrl;
   SchedulesSubscriber subscriber;
 
-  SchedulesForm(this.baseUrl, this.bearer, this.subscriber, {super.key});
+  SchedulesForm(this.subscriber, {super.key});
 
   @override
-  State<StatefulWidget> createState() => _SchedulesForm(bearer, baseUrl, subscriber);
+  State<StatefulWidget> createState() => _SchedulesForm(subscriber);
 }
 
 class _SchedulesForm  extends State<SchedulesForm>{
-  String bearer;
-  String baseUrl;
   SchedulesSubscriber subscriber;
 
   TextEditingController initTime = TextEditingController();
@@ -34,7 +31,7 @@ class _SchedulesForm  extends State<SchedulesForm>{
   List<String> weekDays = [];
   late bool active = true;
 
-  _SchedulesForm(this.bearer, this.baseUrl, this.subscriber){
+  _SchedulesForm(this.subscriber){
     subscriber.subscribeToSelection((event) => {
       setState(() {
         _loadFromEvent(event);
@@ -69,7 +66,7 @@ class _SchedulesForm  extends State<SchedulesForm>{
   }
 
   void sendSchedule() async {
-    final url = Uri.parse("$baseUrl/schedule");
+    final url = Uri.parse("${Preferences.baseUrl}/schedule");
     Schedule schedule = Schedule(Uuid().v1(),
         initTime.text,
         weekDays.toString(),
@@ -78,7 +75,7 @@ class _SchedulesForm  extends State<SchedulesForm>{
     final response = await http.post(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': bearer,
+          'Authorization': Preferences.bearer,
         },
         body: jsonEncode( {
           "id": schedule.id,

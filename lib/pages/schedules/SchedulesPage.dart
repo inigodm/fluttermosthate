@@ -5,25 +5,20 @@ import 'SchedulesForm.dart';
 import 'listener/SchedulesSubscriber.dart';
 
 class SchedulesPage extends StatefulWidget {
-  String bearer;
-  String baseUrl;
-
-  SchedulesPage(this.baseUrl, this.bearer, {super.key});
+  SchedulesPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SchedulesPage(bearer, baseUrl);
+  State<StatefulWidget> createState() => _SchedulesPage();
 }
 
 class _SchedulesPage extends State<SchedulesPage> {
-  String bearer;
-  String baseUrl;
   late SchedulesForm form;
   late SchedulesList list;
   SchedulesSubscriber subscriber= SchedulesSubscriber();
 
-  _SchedulesPage(this.bearer, this.baseUrl){
-    form = SchedulesForm(baseUrl, bearer, subscriber);
-    list = SchedulesList(baseUrl, bearer, subscriber);
+  _SchedulesPage(){
+    form = SchedulesForm(subscriber);
+    list = SchedulesList(subscriber);
   }
 
   @override
