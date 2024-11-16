@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:fluthermostat/main.dart';
 import 'package:fluthermostat/pages/GraphPage.dart';
+import 'package:fluthermostat/pages/MapPage.dart';
 import 'package:fluthermostat/pages/schedules/SchedulesPage.dart';
 import 'package:fluthermostat/pages/Thermostat.dart';
 import 'package:flutter/material.dart';
@@ -55,6 +57,15 @@ class _HomePageState extends State<HomePage> {
     _pages.add(Thermostat());
     _pages.add(SchedulesPage());
     _pages.add(GraphPage.build());
+    var buttons = [
+      BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      BottomNavigationBarItem(icon: Icon(Icons.schedule), label: 'Schedules'),
+      BottomNavigationBarItem(icon: Icon(Icons.leaderboard), label: 'Graphs'),
+    ];
+    if (Preferences.getRole() == 'ADMIN') {
+      _pages.add(MapPage());
+      buttons.add(BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Map'));
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Thermostat'),
@@ -63,20 +74,8 @@ class _HomePageState extends State<HomePage> {
       // El body tiene que tener el array con el indice seleccionado
       body: Center(child: _pages[_selectedIndex]),
         bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Schedules',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.auto_graph_rounded),
-              label: 'Graphs',
-            ),
-          ],
+          type: BottomNavigationBarType.fixed,
+          items: List.unmodifiable(buttons),
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
         )

@@ -1,4 +1,4 @@
-import 'package:fluthermostat/Schedule.dart';
+import 'package:fluthermostat/pages/schedules/Schedule.dart';
 import 'package:fluthermostat/pages/schedules/SchedulesItem.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

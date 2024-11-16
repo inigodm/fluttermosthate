@@ -10,7 +10,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 
-import '../../Schedule.dart';
+import 'Schedule.dart';
 import '../../main.dart';
 
 class SchedulesForm extends StatefulWidget {

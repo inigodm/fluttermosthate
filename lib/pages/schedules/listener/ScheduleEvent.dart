@@ -1,4 +1,4 @@
-import '../../../Schedule.dart';
+import '../Schedule.dart';
 
 abstract class ScheduleEvent {
   final Schedule schedule;

@@ -46,6 +46,7 @@ class _LoginState extends State<Login> {
       if (response.statusCode == 200) {
         await Preferences.setBearer(jsonDecode(response.body)['value']['bearer']);
         await Preferences.setUserId(jsonDecode(response.body)['value']['userId']);
+        await Preferences.setRole(jsonDecode(response.body)['value']['role']);
         errorText = "";
         Navigator.push(context, MaterialPageRoute(builder: (_) => HomePage()));
       } else {

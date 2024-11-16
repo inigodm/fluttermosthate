@@ -39,10 +39,10 @@ Future<Response> informBackground(double latitude, double longitude) {
     return http.put(url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': Preferences.getBearer(),
+          'Authorization': Preferences.bearer,
         },
         body: jsonEncode(<String, String>{
-          "userId": Preferences.getUserId(),
+          "userId": Preferences.userId,
           "latitude": latitude.toString(),
           "longitude": longitude.toString(),
         }));
